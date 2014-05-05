@@ -1043,7 +1043,7 @@ boost::filesystem::path GetDefaultDataDir()
     // Unix: ~/.paccoin
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "paccoin";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "bitpeso";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -1055,10 +1055,10 @@ boost::filesystem::path GetDefaultDataDir()
     // Mac
     pathRet /= "Library/Application Support";
     fs::create_directory(pathRet);
-    return pathRet / "paccoin";
+    return pathRet / "bitpeso";
 #else
     // Unix
-    return pathRet / ".paccoin";
+    return pathRet / ".bitpeso";
 #endif
 #endif
 }
