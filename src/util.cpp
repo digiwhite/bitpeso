@@ -1027,11 +1027,42 @@ void PrintExceptionContinue(std::exception* pex, const char* pszThread)
     strMiscWarning = message;
 }
 
+/*
 boost::filesystem::path GetDefaultDataDir()
 {
     namespace fs = boost::filesystem;
     return fs::path(".");
 }
+*/
+boost::filesystem::path GetDefaultDataDir()
+{
+    namespace fs = boost::filesystem;
+    // Windows < Vista: C:\Documents and Settings\Username\Application Data\paccoin
+    // Windows >= Vista: C:\Users\Username\AppData\Roaming\paccoin
+    // Mac: ~/Library/Application Support/paccoin
+    // Unix: ~/.paccoin
+#ifdef WIN32
+    // Windows
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "paccoin";
+#else
+    fs::path pathRet;
+    char* pszHome = getenv("HOME");
+    if (pszHome == NULL || strlen(pszHome) == 0)
+        pathRet = fs::path("/");
+    else
+        pathRet = fs::path(pszHome);
+#ifdef MAC_OSX
+    // Mac
+    pathRet /= "Library/Application Support";
+    fs::create_directory(pathRet);
+    return pathRet / "paccoin";
+#else
+    // Unix
+    return pathRet / ".paccoin";
+#endif
+#endif
+}
+
 
 const boost::filesystem::path &GetDataDir(bool fNetSpecific)
 {
